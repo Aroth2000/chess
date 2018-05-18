@@ -1,5 +1,12 @@
 class Piece extends Critter { 
 
+  private int team;
+  
+  Piece(int whichTeam) {
+  
+  }
+  
+  
 
 
 
