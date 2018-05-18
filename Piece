@@ -1,1 +1,6 @@
-class Piece { }
+class Piece extends Critter { 
+
+
+
+
+}
