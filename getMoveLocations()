@@ -1,0 +1,146 @@
+public ArrayList<Location> getMoveLocations() //pawn
+{
+	ArrayList<Location> possible = new ArrayList<>();
+	Location loc = getLocation();
+	
+	if(BoundedGrid.get(loc).getTeam().equals("WHITE"))
+	{
+		Location u = new Location(loc.getRow()-1, loc.getCol());
+		Location r = new Location(loc.getRow()-1, loc.getCol()+1);
+		Location l = new Location(loc.getRow()-1, loc.getCol()-1);
+
+		if(BoundedGrid.get(u)=null)
+			possible.add(u);
+	
+		if(BoundedGrid.get(r).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(r)!=null)
+			possible.add(r);
+
+		else if(BoundedGrid.get(l).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(l)!=null)
+			possible.add(l);
+	}
+
+	else
+	{
+		Location d = new Location(loc.getRow()+1, loc.getCol());
+		Location rr = new Location(loc.getRow()+1, loc.getCol()+1);
+		Location ll = new Location(loc.getRow()+1, loc.getCol()-1);
+
+		if(BoundedGrid.get(d)=null)
+			possible.add(d);
+	
+		if(BoundedGrid.get(rr).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(rr)!=null)
+			possible.add(rr);
+
+		else if(BoundedGrid.get(ll).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(ll)!=null)
+			possible.add(ll);
+	}
+
+	return possible;
+}
+
+
+public ArrayList<Location> getMoveLocations() //knight
+{
+	ArrayList<Location> possible = new ArrayList<>();
+	Location loc = getLocation();
+
+	if(isValid(new Location(loc.getRow()-2,loc.getCol()+1)))
+		possible.add(new Location (loc.getRow()-2,loc.getCol()+1));
+
+	if(isValid(new Location(loc.getRow()-2,loc.getCol()-1)))
+		possible.add(new Location(loc.getRow()-2,loc.getCol()-1));
+
+	if(isValid(new Location(loc.getRow()-1,loc.getCol()+2)))
+		possible.add(new Location(loc.getRow()-1,loc.getCol()+2));
+
+	if(isValid(new Location(loc.getRow()-1,loc.getCol()-2)))
+		possible.add(new Location(loc.getRow()-1,loc.getCol()-2));
+
+	if(isValid(new Location(loc.getRow()+1,loc.getCol()+2)))
+		possible.add(new Location(loc.getRow()+1,loc.getCol()+2));
+
+	if(isValid(new Location(loc.getRow()+1,loc.getCol()-2)))
+		possible.add(new Location(loc.getRow()+1,loc.getCol()-2));
+
+	if(isValid(new Location(loc.getRow()+2,loc.getCol()-1)))
+		possible.add(new Location(loc.getRow()+2,loc.getCol()-1));
+
+	if(isValid(new Location(loc.getRow()+2,loc.getCol()+1)))
+		possible.add(new Location(loc.getRow()+2,loc.getCol()+1));
+
+	int i = 0;
+	while(i<possible.size())
+	{
+		if(BoundedGrid.get(possible.get(i)).getTeam==loc.getTeam())
+			possible.remove(i);
+		else	
+			i++;
+	}
+
+	return possible;
+}
+
+   public ArrayList<Location> getMoveLocations() //rook
+   {
+       	ArrayList<Location> possible = new ArrayList<>();
+		Location loc = getLocation();
+		int r = loc.getRow();
+		int c = loc.getCol();
+
+		i=r+1; 
+		while(i!=-1)
+		{
+			if(get(new Location(i, c))==null || get(new Location(i, c.getTeam()!=get(loc).getTeam())
+			{
+				possible.add(new Location(i, c));
+				i++
+			}
+
+			else if
+				get(new Location(i,c).getTeam==get(loc).getTeam)
+					i=-1;
+		}
+
+		j=r-1; 
+		while(j!=-1)
+		{
+			if(get(new Location(j, c))==null || get(new Location(j, c.getTeam()!=get(loc).getTeam())
+			{
+				possible.add(new Location(j, c));
+				j--;
+			}
+
+			else if
+				get(new Location(j,c).getTeam==get(loc).getTeam)
+					j=-1;
+		}
+
+		k=c+1; 
+		while(k!=-1)
+		{
+			if(get(new Location(r,k))==null || get(new Location(r, k).getTeam()!=get(loc).getTeam())
+			{
+				possible.add(new Location(r, k));
+				k++;
+			}
+
+			else if (get(new Location(r,k).getTeam==get(loc).getTeam))
+					k=-1;
+		}
+
+		l=c-1; 
+		while(l!=-1)
+		{
+			if(get(new Location(r,l))==null || get(new Location(r, l).getTeam()!=get(loc).getTeam())
+			{
+				possible.add(new Location(r, l));
+				l--;
+			}
+
+			else if
+				get(new Location(r,l).getTeam==get(loc).getTeam)
+					i=-1;
+		}
+
+		return possible;
+   }
