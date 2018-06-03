@@ -1,42 +1,52 @@
 public ArrayList<Location> getMoveLocations() //pawn
-{
-	ArrayList<Location> possible = new ArrayList<>();
-	Location loc = getLocation();
-	
-	if(BoundedGrid.get(loc).getTeam().equals("WHITE"))
 	{
-		Location u = new Location(loc.getRow()-1, loc.getCol());
-		Location r = new Location(loc.getRow()-1, loc.getCol()+1);
-		Location l = new Location(loc.getRow()-1, loc.getCol()-1);
+		ArrayList<Location> possible = new ArrayList<>();
+		Location loc = getLocation();
+		Grid<Actor> gr = this.getGrid();
+		
+		if(this.getTeam().equals("WHITE"))
+		{
+			Location u = new Location(loc.getRow()-1, loc.getCol());
+			Location r = new Location(loc.getRow()-1, loc.getCol()+1);
+			Location l = new Location(loc.getRow()-1, loc.getCol()-1);
 
-		if(BoundedGrid.get(u)=null)
-			possible.add(u);
-	
-		if(BoundedGrid.get(r).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(r)!=null)
-			possible.add(r);
+			Piece pU = (Piece) gr.get(u);
+			Piece pR = (Piece) gr.get(r);
+			Piece pL = (Piece) gr.get(l);
+			
+			if(pU==null)
+				possible.add(u);
+		
+			if(pR!=null && pR.getTeam()!=this.getTeam())
+				possible.add(r);
 
-		else if(BoundedGrid.get(l).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(l)!=null)
-			possible.add(l);
+			else if(pR!=null && pL.getTeam()!=this.getTeam() && pL!=null)
+				possible.add(l);
+		}
+		
+		else
+		{
+			
+			Location d = new Location(loc.getRow()+1, loc.getCol());
+			Location r = new Location(loc.getRow()+1, loc.getCol()+1);
+			Location l = new Location(loc.getRow()+1, loc.getCol()-1);
+
+			Piece pD = (Piece) gr.get(d);
+			Piece pR = (Piece) gr.get(r);
+			Piece pL = (Piece) gr.get(l);
+			
+			if(pD==null)
+				possible.add(d);
+		
+			if(pR!=null && pR.getTeam()!=this.getTeam())
+				possible.add(r);
+
+			else if(pL!=null && pL.getTeam()!=this.getTeam())
+				possible.add(l);
+		}
+
+		return possible;
 	}
-
-	else
-	{
-		Location d = new Location(loc.getRow()+1, loc.getCol());
-		Location rr = new Location(loc.getRow()+1, loc.getCol()+1);
-		Location ll = new Location(loc.getRow()+1, loc.getCol()-1);
-
-		if(BoundedGrid.get(d)=null)
-			possible.add(d);
-	
-		if(BoundedGrid.get(rr).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(rr)!=null)
-			possible.add(rr);
-
-		else if(BoundedGrid.get(ll).getTeam!=BoundedGrid.get(loc).getTeam && BoundedGrid.get(ll)!=null)
-			possible.add(ll);
-	}
-
-	return possible;
-}
 
 
 public ArrayList<Location> getMoveLocations() //knight
