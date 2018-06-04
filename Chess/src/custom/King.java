@@ -1,6 +1,7 @@
 package custom;
 
 import info.gridworld.actor.Actor;
+import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
 import java.util.ArrayList;
@@ -28,10 +29,10 @@ public class King extends Piece {
 		return output;
 	}
 
-	public ArrayList<Location> getAllOpponentMoveLocations() {
-
+	
+	public ArrayList<Piece> getOpponents() {
+		
 		ArrayList<Piece> opponents = new ArrayList<>();
-		ArrayList<Location> output = new ArrayList<>();
 		
 		for(Location loc : this.getGrid().getOccupiedLocations()) {
 			Actor a = this.getGrid().get(loc);
@@ -43,7 +44,15 @@ public class King extends Piece {
 			}
 		}
 		
-		for(Piece a : opponents) {
+		return opponents;
+	}
+	
+	
+	public ArrayList<Location> getAllOpponentMoveLocations() {
+
+		ArrayList<Location> output = new ArrayList<>();
+		
+		for(Piece a : this.getOpponents()) {
 			if(a instanceof King) {
 				for(Location loc : a.getGrid().getValidAdjacentLocations(a.getLocation())) {
 					if(!output.contains(loc)) {
@@ -77,5 +86,37 @@ public class King extends Piece {
 			return true;
 		else
 			return false;
+	}
+	
+	public boolean willBeInCheckAfter(Piece p, Location newLoc) {
+		
+		
+    	Location oldLoc = p.getLocation();
+		Piece takenPiece = null;
+		
+		if(newLoc.equals(this.getLocation())) {
+			return true;
+		}
+		
+		if(this.getGrid().get(newLoc) instanceof Piece) {
+			takenPiece = (Piece) this.getGrid().get(newLoc);
+		}
+		
+		if(takenPiece!=null)
+			takenPiece.removeSelfFromGrid();
+		
+		p.moveTo(newLoc);
+		
+		boolean output = this.isInCheck();
+		
+		p.moveTo(oldLoc);
+		
+		if(takenPiece!=null) {
+			takenPiece.putSelfInGrid((Grid<Actor>) this.getGrid(), newLoc);
+		}
+    	
+		return output;
+
+
 	}
 }

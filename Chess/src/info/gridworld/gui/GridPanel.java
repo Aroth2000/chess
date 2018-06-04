@@ -300,6 +300,8 @@ public class GridPanel extends JPanel implements Scrollable,
             numCols = grid.getNumCols();
         }
         recalculateCellSize(MIN_CELL_SIZE);        
+        
+        //this.zoomIn();
     }
 
     // private helpers to calculate extra width/height needs for borders/insets.

@@ -48,6 +48,7 @@ public class World<T>
 
     private static final int DEFAULT_ROWS = 10;
     private static final int DEFAULT_COLS = 10;
+    
     private String whoseTurn = "WHITE";
     private boolean currentlyInCheck = false;
     
@@ -77,6 +78,7 @@ public class World<T>
         if (frame == null)
         {
             frame = new WorldFrame<T>(this);
+           // frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
             frame.setVisible(true);
         }
         else

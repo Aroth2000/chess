@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import info.gridworld.actor.Actor;
 import info.gridworld.actor.Critter;
+import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
 public class Piece extends Critter {
@@ -18,9 +19,9 @@ public class Piece extends Critter {
 		this.team = team;
 		
 		if(team.equals("WHITE"))
-			teamColor = Color.WHITE;
+			teamColor = Color.YELLOW;
 		else
-			teamColor = Color.BLACK;
+			teamColor = Color.MAGENTA;
 		
 		this.setColor(teamColor);
 	}
@@ -36,39 +37,42 @@ public class Piece extends Critter {
 			super.act(); //control by computer
 	}
 	
-	public void displayMoveLocations(boolean inCheck) {
+	public void displayMoveLocations() {
 		
-		if(inCheck) {
-			King k = this.getGrid().getKing(this.getTeam());
-			ArrayList<Location> opponentMoves = k.getAllOpponentMoveLocations();
-			//basically only display moves that will end check. this is impossible
+		this.getGrid().removeMoveLocations();
 			
-		}
-		
-		else {
-			this.getGrid().removeMoveLocations();
-	
+			King k = this.getGrid().getKing(this.getTeam());
 			for(Location loc : this.getMoveLocations()) {
 				
 				Actor a = this.getGrid().get(loc);
-	
-				if(a==null) {
-					(new MoveLocation(this)).putSelfInGrid(this.getGrid(), loc);
-				}
-				else if(a instanceof Piece) {
-					Piece b = (Piece) a;
-					if(!b.getTeam().equals(this.getTeam())) {
-						b.setSelected(true);
-						b.setSelectedBy(this);
+				if(!k.willBeInCheckAfter(this, loc)) {
+					if(a==null) {
+						(new MoveLocation(this)).putSelfInGrid(this.getGrid(), loc);
+					}
+					else if(a instanceof Piece) {
+						Piece b = (Piece) a;
+						if(!b.getTeam().equals(this.getTeam())) {
+							b.setSelected(true);
+							b.setSelectedBy(this);
+						}
 					}
 				}
-					
 			}
-		}
+		
 	}
 	
 	public ArrayList<Location> getMoveLocations() {
-		return this.getGrid().getValidAdjacentLocations(this.getLocation());
+		Grid<Actor> gr = this.getGrid();
+		ArrayList<Location> adjacentLocations = this.getGrid().getValidAdjacentLocations(this.getLocation());
+		for(int i = 0; i<adjacentLocations.size(); i++) {
+			if(gr.get(adjacentLocations.get(i)) instanceof Piece) {
+				if(((Piece) gr.get(adjacentLocations.get(i))).getTeam().equals(this.getTeam())) {
+					adjacentLocations.remove(i);
+					i--;
+				}
+			}
+		}
+		return adjacentLocations;
 	}
 	
 	public boolean isSelected() {
@@ -85,6 +89,12 @@ public class Piece extends Critter {
 	
 	public String getTeam() {
 		return team;
+	}
+	
+	public String getOpposingTeam() {
+		if(this.getTeam().equals("WHITE"))
+			return "BLACK";
+		return "WHITE";
 	}
 	
 	public void setTeam(String team) {

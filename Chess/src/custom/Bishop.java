@@ -35,8 +35,13 @@ public class Bishop extends Piece {
 				Actor a = this.getGrid().get(nextLoc);
 				if(a instanceof Piece) {
 					pieceEncountered = true;
+					if(!((Piece) a).getTeam().equals(this.getTeam())) {
+						output.add(nextLoc);
+					}
 				}
-				output.add(nextLoc);
+				
+				else
+					output.add(nextLoc);
 			}
 			
 			else

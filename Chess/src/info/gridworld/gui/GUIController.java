@@ -309,18 +309,12 @@ public class GUIController<T>
         Location loc = display.getCurrentLocation();
         T a = world.getGrid().get(loc);
         boolean completedMove = false;
-        
-        if(world.isCurrentlyInCheck()) {
-        	//potentially the idea of doing the move, and then checking if king is still in check. Then undo the move.
-        }
-        
-        else if (a instanceof Piece) { //need to disable all other moves if king is in check and alert player somehow
-        	if(a instanceof King) {
-        		System.out.println(((King) a).isInCheck());
-        	}
+
+        if (a instanceof Piece) {
         	
         	if(((Piece) a).getTeam().equals(world.getWhoseTurn())) {
-        		((Piece) a).displayMoveLocations(false);
+        		System.out.println(((Piece) a).getMoveLocations());
+        		((Piece) a).displayMoveLocations();
             }
         	
         	else if (((Piece) a).isSelected()) {
@@ -348,6 +342,15 @@ public class GUIController<T>
         	world.getGrid().removeMoveLocations();
         }
         
+        if(completedMove) {
+        	world.nextTurn();
+        	if(world.getGrid().getKing(world.getWhoseTurn()).isInCheck()) {
+        		world.setCurrentlyInCheck(true);
+        		world.getGrid().getKing(world.getWhoseTurn()).setColor(Color.RED);
+        	}
+
+        }
+        
         /*
        	if (loc != null)
         {
@@ -371,16 +374,6 @@ public class GUIController<T>
             }
         }
         */
-        
-        if(completedMove) {
-        	//world.nextTurn();
-        	if(world.getGrid().getKing(world.getWhoseTurn()).isInCheck()) {
-        		System.out.println("IN CHECK");
-        		world.setCurrentlyInCheck(true);
-        		world.getGrid().getKing(world.getWhoseTurn()).setColor(Color.RED);
-        	}
-
-        }
         
         parentFrame.repaint();
     }
