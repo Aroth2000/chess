@@ -29,6 +29,58 @@ public class King extends Piece {
 		return output;
 	}
 
+	public ArrayList<SpecialMove> getSpecialMoveLocations() {
+		//castling
+		ArrayList<SpecialMove> output = new ArrayList<>();
+		if(!this.isInCheck()) {
+			
+			for(int direction = Location.EAST; direction<Location.FULL_CIRCLE; direction=direction+Location.HALF_CIRCLE) {
+				
+				boolean pieceEncountered = false;
+				Location origLoc = this.getLocation();
+				Location nextLoc = this.getLocation();
+				int locationsAway = 0; //needed to find second square for castle
+				Location castleKingLocation = null;
+				Location castleRookLocation = null;
+				
+				while(!pieceEncountered) {
+					
+					origLoc = nextLoc;
+					nextLoc = origLoc.getAdjacentLocation(direction);
+					locationsAway++;
+					
+					if(this.getGrid().isValid(nextLoc)) { 
+					
+						if(locationsAway==1) {
+							castleRookLocation = nextLoc;
+						}
+						
+						else if(locationsAway==2) {
+							castleKingLocation = nextLoc;
+						}
+						
+						Actor a = this.getGrid().get(nextLoc);
+						
+						if(a instanceof Piece) {
+							pieceEncountered = true;
+							Piece p = (Piece) a;
+							if(p instanceof Rook) {
+								if(!p.hasMoved() && !this.hasMoved()) {
+									output.add(new SpecialMove(this, castleKingLocation, p, castleRookLocation));
+								}
+							}
+						}
+						
+					}
+						
+					else
+						pieceEncountered = true;
+		
+				}
+			}	
+		}
+		return output;
+	}
 	
 	public ArrayList<Piece> getOpponents() {
 		
@@ -105,11 +157,11 @@ public class King extends Piece {
 		if(takenPiece!=null)
 			takenPiece.removeSelfFromGrid();
 		
-		p.moveTo(newLoc);
+		p.makeMove(newLoc,false);
 		
 		boolean output = this.isInCheck();
 		
-		p.moveTo(oldLoc);
+		p.makeMove(oldLoc,false);
 		
 		if(takenPiece!=null) {
 			takenPiece.putSelfInGrid((Grid<Actor>) this.getGrid(), newLoc);

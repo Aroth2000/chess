@@ -4,20 +4,16 @@ import info.gridworld.actor.Actor;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
-
 import java.util.ArrayList;
 
 public class Pawn extends Piece {
 
-	private boolean hasMovedAlready;
-	
 	public Pawn(String string) 
 	{
 		super(string);
-		hasMovedAlready = false;
 	}
 	
-	public ArrayList<Location> getMoveLocations()
+	public ArrayList<Location> getMoveLocations() //add special move
 	{
 		ArrayList<Location> potential = new ArrayList<>();
 		Location location = getLocation();
@@ -29,10 +25,6 @@ public class Pawn extends Piece {
 		int left = currentCol-1;
 		String team = this.getTeam();
 		Grid<Actor> gr = this.getGrid();
-		if(!(location.getRow()==1) && team.equals("BLACK"))
-			hasMovedAlready=true;
-		if(!(location.getRow()==6) && team.equals("WHITE"))
-			hasMovedAlready=true;
 		
 		if(team.equals("WHITE"))
 		{
@@ -43,7 +35,7 @@ public class Pawn extends Piece {
 					potential.add(up1);
 					
 					Location up2 = new Location(up-1,currentCol);
-					if(gr.isValid(up2) && hasMovedAlready==false) {
+					if(gr.isValid(up2) && this.hasMoved()==false) {
 						if(!(gr.get(up2) instanceof Piece)) {
 							potential.add(up2);
 						}
@@ -75,7 +67,7 @@ public class Pawn extends Piece {
 					potential.add(down1);
 					
 					Location down2 = new Location(down+1,currentCol);
-					if(gr.isValid(down2) && hasMovedAlready==false) {
+					if(gr.isValid(down2) && this.hasMoved()==false) {
 						if(!(gr.get(down2) instanceof Piece)) {
 							potential.add(down2);
 						}

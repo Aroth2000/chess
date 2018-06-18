@@ -32,15 +32,15 @@ public class GameRunner
 {
     public static void main(String[] args)
     {
+    	
         newGame();
-       
-       
-        
-        
+     
     }
     
     public static void newGame() {
+    	
     	ActorWorld world = new ActorWorld(new BoundedGrid<Actor>(8, 8));
+    	
     	for(int i = 0; i<world.getGrid().getNumCols(); i++) {
     		world.add(new Location(6,i),new Pawn("WHITE"));
     		world.add(new Location(1,i),new Pawn("BLACK"));
@@ -66,12 +66,7 @@ public class GameRunner
         
         world.add(new Location(7,3),new King("WHITE"));
         world.add(new Location(0,3),new King("BLACK"));
-        
-        
-        
-        
-    	
-      
+    
         world.show();
     }
 }

@@ -4,7 +4,6 @@ import info.gridworld.actor.Actor;
 import info.gridworld.grid.Grid;
 import info.gridworld.grid.Location;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 public class Knight extends Piece 

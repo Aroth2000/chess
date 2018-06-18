@@ -14,19 +14,22 @@ public class Piece extends Critter {
 	private boolean selected;
 	private Piece selectedBy;
 	private Color teamColor;
+	private boolean hasMovedAlready;
 	
 	Piece(String team) {
 		this.team = team;
 		
 		if(team.equals("WHITE"))
-			teamColor = Color.YELLOW;
+			teamColor = Color.WHITE;
 		else
-			teamColor = Color.MAGENTA;
+			teamColor = Color.BLACK;
 		
 		this.setColor(teamColor);
+		hasMovedAlready = false;
 	}
 	
-	public void act() {
+	/*
+	public void act() { //maybe I can start the beginnings of an AI over the summer on this...
 		boolean flag = false;
 		
 		if(flag) {
@@ -36,12 +39,14 @@ public class Piece extends Critter {
 		else
 			super.act(); //control by computer
 	}
+	*/
 	
-	public void displayMoveLocations() {
+	public void displayMoveLocations() { 
 		
 		this.getGrid().removeMoveLocations();
 			
 			King k = this.getGrid().getKing(this.getTeam());
+			
 			for(Location loc : this.getMoveLocations()) {
 				
 				Actor a = this.getGrid().get(loc);
@@ -58,7 +63,41 @@ public class Piece extends Critter {
 					}
 				}
 			}
-		
+			
+			for(SpecialMove move : this.getSpecialMoveLocations()) {
+				
+				Location loc = move.getLocation();
+				Actor a = this.getGrid().get(loc);
+				Piece specialPiece = move.getSpecialPiece();
+				Location specialLoc = move.getSpecialNewLocation();
+				
+				if(!k.willBeInCheckAfter(this, loc)) {
+					
+					if(a==null) {
+						(new MoveLocation(this,specialPiece,specialLoc)).putSelfInGrid(this.getGrid(), loc);
+					}
+					
+					else if(a instanceof Piece) {
+						Piece b = (Piece) a;
+						if(!b.getTeam().equals(this.getTeam())) {
+							b.setSelected(true);
+							b.setSelectedBy(this);
+						}
+					}
+				}
+			}
+	}
+
+	public void makeMove(Location loc, boolean forReal) {
+		if (loc == null)
+            removeSelfFromGrid();
+        else {
+        	if(forReal) {
+        		hasMovedAlready = true;
+        	}
+        	moveTo(loc);
+        }
+            
 	}
 	
 	public ArrayList<Location> getMoveLocations() {
@@ -73,6 +112,10 @@ public class Piece extends Critter {
 			}
 		}
 		return adjacentLocations;
+	}
+	
+	public ArrayList<SpecialMove> getSpecialMoveLocations() {
+		return new ArrayList<SpecialMove>();
 	}
 	
 	public boolean isSelected() {
@@ -110,6 +153,10 @@ public class Piece extends Critter {
 	}
 	
 	public String toString() {
-		return super.toString() + "Team: " + team;
+		return super.toString() + "Team: " + team + "hasMoved: " + hasMovedAlready;
+	}
+	
+	public boolean hasMoved() {
+		return hasMovedAlready;
 	}
 }

@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -214,11 +215,11 @@ public class GUIController<T>
         
         controlPanel.add(Box.createRigidArea(spacer));
 
-        controlPanel.add(stepButton);
-        controlPanel.add(Box.createRigidArea(spacer));
-        controlPanel.add(runButton);
-        controlPanel.add(Box.createRigidArea(spacer));
-        controlPanel.add(stopButton);
+        //controlPanel.add(stepButton);
+       // controlPanel.add(Box.createRigidArea(spacer));
+       // controlPanel.add(runButton);
+       // controlPanel.add(Box.createRigidArea(spacer));
+       // controlPanel.add(stopButton);
         runButton.setEnabled(false);
         stepButton.setEnabled(false);
         stopButton.setEnabled(false);
@@ -242,9 +243,9 @@ public class GUIController<T>
             map = map.getParent();
         }
 
-        controlPanel.add(speedSlider);
-        controlPanel.add(new JLabel(resources.getString("slider.gui.fast")));
-        controlPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+       // controlPanel.add(speedSlider);
+       // controlPanel.add(new JLabel(resources.getString("slider.gui.fast")));
+       // controlPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
         stepButton.addActionListener(new ActionListener()
         {
@@ -303,9 +304,7 @@ public class GUIController<T>
      */
     public void editLocation()  
     {
-    	
         World<T> world = parentFrame.getWorld();
-        
         Location loc = display.getCurrentLocation();
         T a = world.getGrid().get(loc);
         boolean completedMove = false;
@@ -313,14 +312,13 @@ public class GUIController<T>
         if (a instanceof Piece) {
         	
         	if(((Piece) a).getTeam().equals(world.getWhoseTurn())) {
-        		System.out.println(((Piece) a).getMoveLocations());
         		((Piece) a).displayMoveLocations();
             }
         	
         	else if (((Piece) a).isSelected()) {
         		Piece activePiece = ((Piece) a).selectedBy();
         		((Piece) a).removeSelfFromGrid();
-        		activePiece.moveTo(loc);
+        		activePiece.makeMove(loc,true);
         		completedMove = true;
         		activePiece.getGrid().removeMoveLocations();
         	}
@@ -332,8 +330,14 @@ public class GUIController<T>
         	
        
         else if(a instanceof MoveLocation) {
-        	Piece activePiece = ((MoveLocation) a).selectedBy();
-        	activePiece.moveTo(loc);
+        	MoveLocation m = (MoveLocation) a;
+        	Piece activePiece = m.selectedBy();
+        	Piece specialPiece = m.getSpecialPiece();
+        	
+        	activePiece.makeMove(loc,true);
+        	if(specialPiece!=null) 
+        		specialPiece.makeMove(m.getSpecialMoveLocation(), true);
+        	
         	completedMove = true;
         	activePiece.getGrid().removeMoveLocations();
         }
@@ -344,11 +348,17 @@ public class GUIController<T>
         
         if(completedMove) {
         	world.nextTurn();
-        	if(world.getGrid().getKing(world.getWhoseTurn()).isInCheck()) {
+        	King k = world.getGrid().getKing(world.getWhoseTurn());
+        	if(k.isInCheck()) {
         		world.setCurrentlyInCheck(true);
-        		world.getGrid().getKing(world.getWhoseTurn()).setColor(Color.RED);
+        		k.setColor(Color.RED);
+        		ArrayList<Location> potentialSaves = world.getGrid().getKing(k.getOpposingTeam()).getAllOpponentMoveLocations();
+        		System.out.println(potentialSaves);
+        		if(potentialSaves.size()==0) {
+        			javax.swing.JOptionPane.showMessageDialog(null,"CHECKMATE", world.getWhoseTurn() + " wins!",  0);
+        		}
         	}
-
+        	
         }
         
         /*
